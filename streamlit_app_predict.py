@@ -74,7 +74,7 @@ def predict(model, url):
 	
 	
 def main():
-    st.title('Defect Detection')
+    st.title('Defect Detection v2')
     rf = Roboflow(api_key="iYMRpnXtS12nRq1hLvH6")
     project = rf.workspace().project("herminio-circulat-object")
     model = project.version(1).model
