@@ -76,8 +76,8 @@ def predict(model, url):
 def main():
     st.title('Defect Detection v2')
     rf = Roboflow(api_key="iYMRpnXtS12nRq1hLvH6")
-    project = rf.workspace().project("herminio-circulat-object")
-    model = project.version(1).model
+    project = rf.workspace().project("herminio-circular-object-2")
+    model = project.version(2).model
      
     image, svd_img = load_image()
 
