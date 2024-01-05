@@ -54,8 +54,8 @@ def drawBoundingBox(saved_image ,x, y, w, h, cl, cf):
     y = int(y)
     w = int(w)
     h = int(h)
-    start_pnt = (x-w//2-20,y-h//-20)
-    end_pnt = (x+w//2+20, y+h//2+20)
+    start_pnt = (x-w//2-5,y-h//2-5)
+    end_pnt = (x+w//2+5, y+h//2+5)
     txt_start_pnt = (x-w//2, y-h//2-15)
 
     if cl == "Ok":
