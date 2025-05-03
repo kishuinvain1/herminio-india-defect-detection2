@@ -105,10 +105,10 @@ def main():
                 h = results['predictions'][i]['height']
                 cl = results['predictions'][i]['class']
                 cnf = results['predictions'][i]['confidence']
-                x1 = x - w//2
-                x2 = x + w//2
-                y1 = y - h//2
-                y2 = y + h//2
+                x1 = int(x - w//2)
+                x2 = int(x + w//2)
+                y1 = int(y - h//2)
+                y2 = int(y + h//2)
                 roi = svd_img[y1:y2, x1:x2, :]
                 cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
 
