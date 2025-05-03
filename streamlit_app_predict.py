@@ -96,6 +96,7 @@ def main():
             st.write("No Object Detected")
         else:
             roi_count = 0
+            roi_list = []
             for i in range(len(results['predictions'])):
                 roi_count += 1
                 new_img_pth = results['predictions'][i]['image_path']
@@ -111,6 +112,7 @@ def main():
                 y2 = int(y + h//2)
                 roi = svd_img[y1:y2, x1:x2, :]
                 cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
+                roi_list.append(roi)
 
 
 
@@ -120,7 +122,7 @@ def main():
             st.write('DETECTION RESULTS')    
             st.image(svd_img, caption='Resulting Image')
             for i in range(roi_count):
-                st.image(f"roi_{str(i)}.jpg", caption=f'roi_{str(i)}')
+                st.image(roi_list[i], caption=f'roi_{str(i)}')
            
 
 if __name__ == '__main__':
