@@ -54,14 +54,14 @@ def drawBoundingBox(saved_image ,x, y, w, h, cl, cf):
     y = int(y)
     w = int(w)
     h = int(h)
-    start_pnt = (x-w//2-15,y-h//2-15)
-    end_pnt = (x+w//2+15, y+h//2+15)
+    start_pnt = (x-w//2,y-h//2)
+    end_pnt = (x+w//2, y+h//2)
     txt_start_pnt = (x-w//2, y-h//2-15-15)
 
     color = (255, 0, 0)   
         
     img = cv2.rectangle(img, start_pnt, end_pnt, color, 10)
-    img = cv2.putText(img, cl, txt_start_pnt, cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2, cv2.LINE_AA)	
+    img = cv2.putText(img, cl, txt_start_pnt, cv2.FONT_HERSHEY_SIMPLEX, 1, color, 1, cv2.LINE_AA)	
     return img
     	
     
@@ -139,7 +139,12 @@ def main():
                 x2 = int(x + w//2)
                 y1 = int(y - h//2)
                 y2 = int(y + h//2)
-                roi = svd_img[y1:y2, x1:x2, :]
+                try:
+                    margin = 20
+                    roi = svd_img[y1-margin:y2+margin, x1-margin:x2+margin, :]
+                except:
+                    margin = 0
+                    roi = svd_img[y1-margin:y2+margin, x1-margin:x2+margin, :]   
                 cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
                 roi_list.append(roi)
                 roi_res = predict_def_loc(model_def_loc, roi)
