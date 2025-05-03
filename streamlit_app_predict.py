@@ -58,10 +58,7 @@ def drawBoundingBox(saved_image ,x, y, w, h, cl, cf):
     end_pnt = (x+w//2+15, y+h//2+15)
     txt_start_pnt = (x-w//2, y-h//2-15-15)
 
-    if cl == "Ok":
-        color = (0,255,0)
-    else:
-        color = (255,0,0)    
+    color = (255, 0, 0)   
         
     img = cv2.rectangle(img, start_pnt, end_pnt, color, 10)
     img = cv2.putText(img, cl, txt_start_pnt, cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2, cv2.LINE_AA)	
@@ -73,14 +70,45 @@ def drawBoundingBox(saved_image ,x, y, w, h, cl, cf):
 def predict(model, url):
     return model.predict(url, confidence=50, overlap=70).json()
     #return model.predict(url, hosted=True).json()
+
+
+
+def predict_def_loc(model, roi):
+    results = model.predict(roi, confidence=10, overlap=70).json()
+    if len(results['predictions']) == 0:
+        return roi
+    else:
+        for i in range(len(results['predictions'])):
+            new_img_pth = results['predictions'][i]['image_path']
+            x = results['predictions'][i]['x']
+            y = results['predictions'][i]['y']
+            w = results['predictions'][i]['width']
+            h = results['predictions'][i]['height']
+            cl = results['predictions'][i]['class']
+            cnf = results['predictions'][i]['confidence']
+            x1 = int(x - w//2)
+            x2 = int(x + w//2)
+            y1 = int(y - h//2)
+            y2 = int(y + h//2)
+            roi = drawBoundingBox(roi, x, y, w, h, cl, cnf)
+        return roi
+    
 	
 	
 def main():
     st.title('Defect Detection v2')
 
+    # Roi Extraction model
     rf = Roboflow(api_key="0N1hjNKtBabtHfuP93Q8")
     project = rf.workspace("verify-gn-hnnai").project("herminio-object-detection")
     model = project.version(1).model
+
+    # Defect Localization model
+    rf = Roboflow(api_key="0N1hjNKtBabtHfuP93Q8")
+    project = rf.workspace("verify-gn-hnnai").project("herminio-defect-localization")
+    model_def_loc = project.version(1).model
+    
+                
     
                 
     image, svd_img = load_image()
@@ -97,6 +125,7 @@ def main():
         else:
             roi_count = 0
             roi_list = []
+            roi_res_list = []
             for i in range(len(results['predictions'])):
                 roi_count += 1
                 new_img_pth = results['predictions'][i]['image_path']
@@ -113,8 +142,8 @@ def main():
                 roi = svd_img[y1:y2, x1:x2, :]
                 cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
                 roi_list.append(roi)
-
-
+                roi_res = predict_def_loc(roi)
+                roi_res_list.append(roi_res)
 
 
                 #svd_img = drawBoundingBox(svd_img,x, y, w, h, cl, cnf)
@@ -122,7 +151,7 @@ def main():
             st.write('DETECTION RESULTS')    
             st.image(svd_img, caption='Resulting Image')
             for i in range(roi_count):
-                st.image(roi_list[i], caption=f'roi_{str(i)}')
+                st.image(roi_res_list[i], caption=f'roi_{str(i)}')
            
 
 if __name__ == '__main__':
