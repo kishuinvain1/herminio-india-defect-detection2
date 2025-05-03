@@ -77,10 +77,12 @@ def predict(model, url):
 	
 def main():
     st.title('Defect Detection v2')
-    rf = Roboflow(api_key="iYMRpnXtS12nRq1hLvH6")
-    project = rf.workspace().project("herminio-circular-object-2")
-    model = project.version(2).model
-     
+
+    rf = Roboflow(api_key="0N1hjNKtBabtHfuP93Q8")
+    project = rf.workspace("verify-gn-hnnai").project("herminio-object-detection")
+    model = project.version(1).model
+    
+                
     image, svd_img = load_image()
 
     result = st.button('Detect')
@@ -93,7 +95,9 @@ def main():
             st.image(svd_img)
             st.write("No Object Detected")
         else:
+            roi_count = 0
             for i in range(len(results['predictions'])):
+                roi_count += 1
                 new_img_pth = results['predictions'][i]['image_path']
                 x = results['predictions'][i]['x']
                 y = results['predictions'][i]['y']
@@ -101,11 +105,22 @@ def main():
                 h = results['predictions'][i]['height']
                 cl = results['predictions'][i]['class']
                 cnf = results['predictions'][i]['confidence']
+                x1 = x - w//2
+                x2 = x + w//2
+                y1 = y - h//2
+                y2 = y + h//2
+                roi = svd_img[y1:y2, x1:x2, :]
+                cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
 
-                svd_img = drawBoundingBox(svd_img,x, y, w, h, cl, cnf)
+
+
+
+                #svd_img = drawBoundingBox(svd_img,x, y, w, h, cl, cnf)
 
             st.write('DETECTION RESULTS')    
             st.image(svd_img, caption='Resulting Image')
+            for i in range(roi_count):
+                st.image(f"roi_{str(i)}.jpg", caption=f'roi_{str(i)}')
            
 
 if __name__ == '__main__':
