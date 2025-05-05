@@ -22,7 +22,9 @@ def load_image():
     if uploaded_file is not None:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         opencv_image = cv2.imdecode(file_bytes, 1)
-        opencv_image_resz = cv2.resize(opencv_image, (1024, 1024))
+        height_res = opencv_image.shape[0]//4
+        width_res = opencv_image.shape[1]//4   
+        opencv_image_resz = cv2.resize(opencv_image, (int(width_res), int(height_res))
         image_data = uploaded_file.getvalue() 
         #st.image(image_data)
         name = uploaded_file.name
