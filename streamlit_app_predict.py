@@ -9,6 +9,33 @@ import numpy as np
 import base64
 
 
+def resize_image(image, width=None, height=None):
+    """Resizes an image while maintaining aspect ratio.
+
+    Args:
+        image: The input image as a NumPy array.
+        width: The desired width (optional).
+        height: The desired height (optional).
+
+    Returns:
+        The resized image as a NumPy array.
+    """
+    original_height, original_width = image.shape[:2]
+
+    if width is None and height is None:
+        return image
+    
+    if width is not None:
+      ratio = width / original_width
+      new_height = int(original_height * ratio)
+      new_size = (width, new_height)
+    else:
+      ratio = height / original_height
+      new_width = int(original_width * ratio)
+      new_size = (new_width, height)
+
+    resized_image = cv2.resize(image, new_size, interpolation=cv2.INTER_AREA)
+    return resized_image
 
 
 
@@ -22,9 +49,10 @@ def load_image():
     if uploaded_file is not None:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         opencv_image = cv2.imdecode(file_bytes, 1)
-        height_res = opencv_image.shape[0]//4
-        width_res = opencv_image.shape[1]//4   
-        opencv_image_resz = cv2.resize(opencv_image, (int(width_res), int(height_res)))
+        #height_res = opencv_image.shape[0]//4
+        #width_res = opencv_image.shape[1]//4   
+        #opencv_image_resz = cv2.resize(opencv_image, (int(width_res), int(height_res)))
+        opencv_image_resz = resize_image(opencv_image, width=1000, height=1000)	    
         image_data = uploaded_file.getvalue() 
         #st.image(image_data)
         name = uploaded_file.name
