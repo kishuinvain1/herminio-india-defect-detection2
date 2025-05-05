@@ -142,7 +142,7 @@ def main():
                 try:
                     margin = 20
                     roi = svd_img[y1-margin:y2+margin, x1-margin:x2+margin, :]
-		    cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
+                    cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
                     roi_list.append(roi)
                     roi_res = predict_def_loc(model_def_loc, roi)
                     roi_res_list.append(roi_res)
