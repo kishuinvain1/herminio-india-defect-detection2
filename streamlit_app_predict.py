@@ -142,9 +142,9 @@ def main():
                 y1 = int(y - h//2)
                 y2 = int(y + h//2)
                 try:
-                    margin = 20
+                    margin = 0
                     roi = svd_img[y1-margin:y2+margin, x1-margin:x2+margin, :]
-                    roi = cv2.resize(roi, (640, 640))			
+                    #roi = cv2.resize(roi, (640, 640))			
                     cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
                     roi_list.append(roi)
                     roi_res = predict_def_loc(model_def_loc, roi)
@@ -152,7 +152,7 @@ def main():
                 except:
                     margin = 0
                     roi = svd_img[y1-margin:y2+margin, x1-margin:x2+margin, :]
-                    roi = cv2.resize(roi, (640, 640))			
+                    #roi = cv2.resize(roi, (640, 640))			
                     cv2.imwrite(f"roi_{str(roi_count)}.jpg", roi)
                     roi_list.append(roi)
                     roi_res = predict_def_loc(model_def_loc, roi)
