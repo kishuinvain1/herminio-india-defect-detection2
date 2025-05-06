@@ -104,7 +104,7 @@ def predict(model, url):
 
 
 def predict_def_loc(model, roi):
-    results = model.predict(roi, confidence=5, overlap=70).json()
+    results = model.predict(roi, confidence=10, overlap=70).json()
     if len(results['predictions']) == 0:
         return roi
     else:
